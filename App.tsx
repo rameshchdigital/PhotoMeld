@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -20,6 +21,7 @@ import ImageGeneratorFromTextPage from './components/ImageGeneratorFromTextPage'
 import LogoGeneratorPage from './components/LogoGeneratorPage';
 import CartoonizerPage from './components/CartoonizerPage';
 import GhibliStyleFilterPage from './components/GhibliStyleFilterPage';
+import AIFiltersPage from './components/AIFiltersPage';
 import TattooGeneratorPage from './components/TattooGeneratorPage';
 import BabyGeneratorPage from './components/BabyGeneratorPage';
 import FantasyMapGeneratorPage from './components/FantasyMapGeneratorPage';
@@ -35,6 +37,9 @@ import ChatFAB from './components/ChatFAB';
 import TextChatBot from './components/TextChatBot';
 import VoiceChatBot from './components/VoiceChatBot';
 import MagicEditorPage from './components/MagicEditorPage';
+import SearchModal from './components/SearchModal';
+import ImageToPromptGeneratorPage from './components/ImageToPromptGeneratorPage';
+import VideoToPromptGeneratorPage from './components/VideoToPromptGeneratorPage';
 
 export type Page = 
   | 'home' 
@@ -52,9 +57,12 @@ export type Page =
   | 'hairstyleChanger'
   | 'faceSwap'
   | 'imageGenerator'
+  | 'imageToPrompt'
+  | 'videoToPrompt'
   | 'logoGenerator'
   | 'cartoonizer'
   | 'ghibliFilter'
+  | 'aiFilters'
   | 'tattooGenerator'
   | 'babyGenerator'
   | 'fantasyMapGenerator'
@@ -75,6 +83,7 @@ const updateMetaTag = (id: string, attribute: string, content: string) => {
 const App: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<Page>('home');
     const [chatMode, setChatMode] = useState<ChatMode>('none');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     useEffect(() => {
         let pageTitle = "PhotoMeld";
@@ -162,12 +171,18 @@ const App: React.FC = () => {
                 return <FaceSwapPage onNavigate={handleNavigate} currentPage={currentPage} allTools={toolCategories} />;
             case 'imageGenerator':
                 return <ImageGeneratorFromTextPage onNavigate={handleNavigate} currentPage={currentPage} allTools={toolCategories} />;
+            case 'imageToPrompt':
+                return <ImageToPromptGeneratorPage onNavigate={handleNavigate} currentPage={currentPage} allTools={toolCategories} />;
+            case 'videoToPrompt':
+                return <VideoToPromptGeneratorPage onNavigate={handleNavigate} currentPage={currentPage} allTools={toolCategories} />;
             case 'logoGenerator':
                 return <LogoGeneratorPage onNavigate={handleNavigate} currentPage={currentPage} allTools={toolCategories} />;
             case 'cartoonizer':
                 return <CartoonizerPage onNavigate={handleNavigate} currentPage={currentPage} allTools={toolCategories} />;
             case 'ghibliFilter':
                 return <GhibliStyleFilterPage onNavigate={handleNavigate} currentPage={currentPage} allTools={toolCategories} />;
+            case 'aiFilters':
+                return <AIFiltersPage onNavigate={handleNavigate} currentPage={currentPage} allTools={toolCategories} />;
             case 'tattooGenerator':
                 return <TattooGeneratorPage onNavigate={handleNavigate} currentPage={currentPage} allTools={toolCategories} />;
             case 'babyGenerator':
@@ -195,7 +210,7 @@ const App: React.FC = () => {
 
     return (
         <div className="bg-gray-900 text-gray-100 min-h-screen flex flex-col font-sans">
-            <Header onNavigate={handleNavigate} />
+            <Header onNavigate={handleNavigate} onOpenSearch={() => setIsSearchOpen(true)} />
             <div className="flex-grow flex flex-col">
                 {renderPage()}
             </div>
@@ -203,6 +218,11 @@ const App: React.FC = () => {
             <ChatFAB onOpenTextChat={() => setChatMode('text')} onOpenVoiceChat={() => setChatMode('voice')} />
             {chatMode === 'text' && <TextChatBot onClose={() => setChatMode('none')} />}
             {chatMode === 'voice' && <VoiceChatBot onClose={() => setChatMode('none')} onFunctionCall={handleFunctionCall} />}
+            <SearchModal
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
+                onNavigate={handleNavigate}
+            />
         </div>
     );
 };

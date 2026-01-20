@@ -75,6 +75,7 @@ const ImageGeneratorPanel: React.FC<ImageGeneratorPanelProps> = ({ onGenerate, i
                         onClick={() => handleStyleClick(style)}
                         disabled={isLoading}
                         className="bg-white/10 text-gray-200 text-xs font-semibold py-1 px-3 rounded-full hover:bg-white/20 transition-colors"
+                        title={`Add style: ${style}`}
                     >
                        + {style}
                     </button>
@@ -92,6 +93,7 @@ const ImageGeneratorPanel: React.FC<ImageGeneratorPanelProps> = ({ onGenerate, i
                         onClick={() => setAspectRatio(id)}
                         disabled={isLoading}
                         className={`py-2 px-1 text-center rounded-md text-xs font-semibold transition-all ${aspectRatio === id ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`}
+                        title={`Set aspect ratio to ${label} (${id})`}
                     >
                         {label} <span className="block text-gray-400">{id}</span>
                     </button>

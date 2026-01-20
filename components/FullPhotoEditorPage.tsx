@@ -392,10 +392,10 @@ const FullPhotoEditorPage: React.FC<FullPhotoEditorPageProps> = ({ onNavigate, c
             <div className="relative w-full max-w-5xl mx-auto flex flex-col items-center gap-4">
                 {error && <div className="w-full bg-red-500/20 border border-red-500 text-red-300 p-4 rounded-lg animate-fade-in"><p className="font-bold">Error:</p><p>{error}</p></div>}
                 <div className="flex items-center gap-4">
-                <button onClick={resetState} className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded">Start Over</button>
-                <button onClick={handleUndo} disabled={history.length === 0 || isLoading} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50">Undo</button>
-                <button onClick={handleRedo} disabled={redoHistory.length === 0 || isLoading} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50">Redo</button>
-                <a href={imageUrl!} download={imageFile?.name || "download.png"} className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">Download</a>
+                <button onClick={resetState} className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded" title="Clear everything and start over with a new image">Start Over</button>
+                <button onClick={handleUndo} disabled={history.length === 0 || isLoading} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50" title="Undo the last action (Ctrl+Z)">Undo</button>
+                <button onClick={handleRedo} disabled={redoHistory.length === 0 || isLoading} className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded disabled:opacity-50" title="Redo the last undone action (Ctrl+Y)">Redo</button>
+                <a href={imageUrl!} download={imageFile?.name || "download.png"} className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded" title="Download the current image">Download</a>
                 </div>
             </div>
 

@@ -363,11 +363,22 @@ const EditorCanvas = forwardRef<EditorCanvasRef, EditorCanvasProps>(({
         });
     };
 
-    // --- Cursor Style ---
+    // --- Cursor Style & Title ---
     const getCursorStyle = () => {
         if (isCropping || activeTool === 'crop') return 'crosshair';
         if (activeTool === 'move') return 'default';
         return 'cell';
+    };
+
+    const getCursorTitle = () => {
+        if (isCropping || activeTool === 'crop') return 'Click and drag to select an area to crop.';
+        switch(activeTool) {
+            case 'rectangle': return 'Click and drag to draw a rectangular selection.';
+            case 'lasso': return 'Click and drag to draw a freeform (lasso) selection.';
+            case 'magicWand': return `Click on a color to select adjacent pixels with similar colors. Adjust tolerance in the panel.`;
+            case 'move': return 'The canvas is not interactive. Select another tool to begin editing.';
+            default: return 'Your image ready for editing.';
+        }
     };
     
     return (
@@ -380,6 +391,7 @@ const EditorCanvas = forwardRef<EditorCanvasRef, EditorCanvasProps>(({
             onMouseLeave={handleMouseUp}
             onClick={handleMagicWandClick}
             style={{ cursor: getCursorStyle() }}
+            title={getCursorTitle()}
         >
             <img
                 ref={imageRef}

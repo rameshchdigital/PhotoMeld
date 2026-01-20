@@ -124,20 +124,20 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
         
         {/* Brightness Slider */}
         <div className="flex items-center justify-between"><label htmlFor="brightness-slider" className="font-medium text-gray-300">Brightness</label><span className="text-sm font-mono bg-gray-700/50 px-2 py-1 rounded w-14 text-center">{previewAdjustments.brightness - 100}</span></div>
-        <input id="brightness-slider" type="range" min="0" max="200" value={previewAdjustments.brightness} onChange={(e) => onPreviewChange({...previewAdjustments, brightness: Number(e.target.value)})} disabled={isLoading} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" />
+        <input id="brightness-slider" type="range" min="0" max="200" value={previewAdjustments.brightness} onChange={(e) => onPreviewChange({...previewAdjustments, brightness: Number(e.target.value)})} disabled={isLoading} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" title="Adjust the overall brightness of the image" />
         
         {/* Contrast Slider */}
         <div className="flex items-center justify-between"><label htmlFor="contrast-slider" className="font-medium text-gray-300">Contrast</label><span className="text-sm font-mono bg-gray-700/50 px-2 py-1 rounded w-14 text-center">{previewAdjustments.contrast - 100}</span></div>
-        <input id="contrast-slider" type="range" min="0" max="200" value={previewAdjustments.contrast} onChange={(e) => onPreviewChange({...previewAdjustments, contrast: Number(e.target.value)})} disabled={isLoading} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" />
+        <input id="contrast-slider" type="range" min="0" max="200" value={previewAdjustments.contrast} onChange={(e) => onPreviewChange({...previewAdjustments, contrast: Number(e.target.value)})} disabled={isLoading} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" title="Adjust the overall contrast between light and dark areas" />
         
         {/* Saturation Slider */}
         <div className="flex items-center justify-between"><label htmlFor="saturation-slider" className="font-medium text-gray-300">Saturation</label><span className="text-sm font-mono bg-gray-700/50 px-2 py-1 rounded w-14 text-center">{previewAdjustments.saturation - 100}</span></div>
-        <input id="saturation-slider" type="range" min="0" max="200" value={previewAdjustments.saturation} onChange={(e) => onPreviewChange({...previewAdjustments, saturation: Number(e.target.value)})} disabled={isLoading} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" />
+        <input id="saturation-slider" type="range" min="0" max="200" value={previewAdjustments.saturation} onChange={(e) => onPreviewChange({...previewAdjustments, saturation: Number(e.target.value)})} disabled={isLoading} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" title="Adjust the intensity of colors in the image" />
 
         {hasRealtimeAdjustments && (
           <div className="grid grid-cols-2 gap-2 mt-2 animate-fade-in">
-            <button onClick={onResetAdjustments} className="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-4 rounded-lg transition-all" disabled={isLoading}>Reset</button>
-            <button onClick={onApplyRealtimeAdjustments} className="w-full bg-gradient-to-br from-blue-600 to-cyan-500 text-white font-bold py-3 px-4 rounded-lg transition-all" disabled={isLoading}>Apply Generative Adjustment</button>
+            <button onClick={onResetAdjustments} className="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-4 rounded-lg transition-all" disabled={isLoading} title="Reset brightness, contrast, and saturation adjustments">Reset</button>
+            <button onClick={onApplyRealtimeAdjustments} className="w-full bg-gradient-to-br from-blue-600 to-cyan-500 text-white font-bold py-3 px-4 rounded-lg transition-all" disabled={isLoading} title="Use AI to apply these color adjustments for a high-quality result">Apply Generative Adjustment</button>
           </div>
         )}
       </div>
@@ -150,7 +150,7 @@ const AdjustmentPanel: React.FC<AdjustmentPanelProps> = ({
           </div>
           <div className="bg-black/20 p-4 rounded-lg flex flex-col gap-3">
               <div className="flex items-center justify-between"><label htmlFor="vignette-slider" className="font-semibold text-gray-200">Vignette</label><span className="text-sm font-mono bg-gray-700/50 px-2 py-1 rounded">{vignetteIntensity}</span></div>
-              <div className="grid grid-cols-2 gap-2"><button onClick={() => handleVignetteColorChange('black')} className={`w-full py-1 rounded text-sm transition-colors ${vignetteColor === 'black' ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`} disabled={isLoading}>Black</button><button onClick={() => handleVignetteColorChange('white')} className={`w-full py-1 rounded text-sm transition-colors ${vignetteColor === 'white' ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`} disabled={isLoading}>White</button></div>
+              <div className="grid grid-cols-2 gap-2"><button onClick={() => handleVignetteColorChange('black')} className={`w-full py-1 rounded text-sm transition-colors ${vignetteColor === 'black' ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`} disabled={isLoading} title="Set vignette color to black">Black</button><button onClick={() => handleVignetteColorChange('white')} className={`w-full py-1 rounded text-sm transition-colors ${vignetteColor === 'white' ? 'bg-blue-600 text-white' : 'bg-gray-700 hover:bg-gray-600'}`} disabled={isLoading} title="Set vignette color to white">White</button></div>
               <input id="vignette-slider" type="range" min="0" max="100" step="5" value={vignetteIntensity} onChange={handleVignetteIntensityChange} disabled={isLoading} className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer" title="Adjust the intensity of the vignette effect"/>
               {vignetteIntensity > 0 && <div className="animate-fade-in"><button onClick={handleApplyVignette} className="w-full mt-2 bg-gradient-to-br from-blue-600 to-cyan-500 text-white font-bold py-3 px-6 rounded-lg transition-all" disabled={isLoading} title="Apply the selected vignette">Apply Vignette ({vignetteIntensity})</button></div>}
           </div>

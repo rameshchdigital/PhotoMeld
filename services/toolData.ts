@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -9,7 +10,10 @@ import { Page } from '../App';
 import {
     SparkleIcon, UpscaleIcon, ColorizeIcon, BackgroundIcon, EraseIcon, HeadshotIcon,
     PassportIcon, HairstyleIcon, FaceSwapIcon, LogoIcon, CartoonIcon, GhibliIcon,
-    TattooIcon, BabyIcon, MapIcon, ExpandIcon, TshirtIcon, MagicWandIcon, FileSwapIcon, MagicPencilIcon
+    TattooIcon, BabyIcon, MapIcon, ExpandIcon, TshirtIcon, MagicWandIcon, FileSwapIcon, MagicPencilIcon,
+    PaletteIcon,
+    QuestionMarkCircleIcon,
+    VideoIcon
 } from '../components/icons';
 
 export interface Tool {
@@ -60,6 +64,9 @@ export const toolCategories: ToolCategory[] = [
         keywords: "creative ai, generative ai, ai tools, art generator, content creation",
         tools: [
             { name: "AI Image Generator", description: "Create original images and art from a simple text description.", page: "imageGenerator", Icon: SparkleIcon, keywords: "ai image generator, text to image, ai art generator, create image from text" },
+            { name: "Image to Prompt Generator", description: "Upload an image to generate a detailed text prompt that describes it. Discover the words to create similar AI art.", page: "imageToPrompt", Icon: QuestionMarkCircleIcon, keywords: "image to prompt, prompt generator, reverse image prompt, describe image, ai prompt engineering" },
+            { name: "Video to Prompt Generator", description: "Analyze video content to generate creative text prompts. Describe motion, mood, and cinematic style instantly.", page: "videoToPrompt", Icon: VideoIcon, keywords: "video to prompt, video analyzer, prompt engineering, ai video prompt, describe video" },
+            { name: "AI Filters", description: "Apply one-click artistic filters to transform your photos into styles like Anime, Ghibli, Synthwave, and more.", page: "aiFilters", Icon: PaletteIcon, keywords: "ai filters, photo filters, artistic effects, anime filter, ghibli filter, synthwave" },
             { name: "AI Logo Generator", description: "Design a unique, professional logo for your brand or business.", page: "logoGenerator", Icon: LogoIcon, keywords: "logo generator, ai logo maker, create a logo, free logo design" },
             { name: "Photo to Cartoon", description: "Turn your photos into cartoons with various artistic styles.", page: "cartoonizer", Icon: CartoonIcon, keywords: "photo to cartoon, cartoonizer, cartoon yourself, ai cartoon filter" },
             { name: "Ghibli Style Filter", description: "Apply the beautiful, nostalgic art style of Studio Ghibli films.", page: "ghibliFilter", Icon: GhibliIcon, keywords: "ghibli filter, ghibli style, ai anime filter, photo to ghibli" },

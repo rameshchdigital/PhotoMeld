@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generateImageFromText } from '../services/geminiService';
-import { SparkleIcon, DownloadIcon } from './icons';
+import { SparkleIcon, DownloadIcon, UploadIcon, XCircleIcon } from './icons';
 import Spinner from './Spinner';
 import { Page } from '../App';
 import { ToolCategory } from '../services/toolData';
@@ -22,12 +22,22 @@ type AspectRatio = '1:1' | '16:9' | '9:16' | '4:3' | '3:4';
 const ImageGeneratorFromTextPage: React.FC<ImageGeneratorFromTextPageProps> = ({ onNavigate, currentPage, allTools }) => {
     const [prompt, setPrompt] = useState('');
     const [aspectRatio, setAspectRatio] = useState<AspectRatio>('1:1');
+    const [inputImage, setInputImage] = useState<File | null>(null);
+    const [inputImagePreview, setInputImagePreview] = useState<string | null>(null);
     const [resultUrl, setResultUrl] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
     const currentCategory = allTools.find(cat => cat.tools.some(tool => tool.page === currentPage));
     
+    useEffect(() => {
+        return () => {
+            if (inputImagePreview) {
+                URL.revokeObjectURL(inputImagePreview);
+            }
+        };
+    }, [inputImagePreview]);
+
     const aspectRatios: { id: AspectRatio; label: string }[] = [
         { id: '1:1', label: 'Square' },
         { id: '16:9', label: 'Widescreen' },
@@ -43,13 +53,30 @@ const ImageGeneratorFromTextPage: React.FC<ImageGeneratorFromTextPageProps> = ({
     const handleStyleClick = (style: string) => {
         setPrompt(prev => {
             const trimmedPrev = prev.trim();
-            // Avoid adding duplicate styles
             if (trimmedPrev.toLowerCase().includes(style.toLowerCase())) {
                 return prev;
             }
-            // Append with a comma, cleaning up any existing trailing comma
             return trimmedPrev ? `${trimmedPrev.replace(/,$/, '').trim()}, ${style}` : style;
         });
+    };
+    
+    const handleInputImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setInputImage(file);
+            if (inputImagePreview) {
+                URL.revokeObjectURL(inputImagePreview);
+            }
+            setInputImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    const removeInputImage = () => {
+        setInputImage(null);
+        if (inputImagePreview) {
+            URL.revokeObjectURL(inputImagePreview);
+        }
+        setInputImagePreview(null);
     };
 
     const handleGenerate = async () => {
@@ -58,7 +85,7 @@ const ImageGeneratorFromTextPage: React.FC<ImageGeneratorFromTextPageProps> = ({
         setError(null);
         setResultUrl(null);
         try {
-            const generatedUrl = await generateImageFromText(prompt, aspectRatio);
+            const generatedUrl = await generateImageFromText(prompt, aspectRatio, inputImage || undefined);
             setResultUrl(generatedUrl);
         } catch (e: any) {
             console.error(e);
@@ -109,6 +136,28 @@ const ImageGeneratorFromTextPage: React.FC<ImageGeneratorFromTextPageProps> = ({
                                     ))}
                                 </div>
                             </div>
+                            <div className="flex flex-col gap-2">
+                                <h4 className="font-semibold text-gray-300">Image Prompt (Optional)</h4>
+                                <p className="text-xs text-gray-400 -mt-2">Add an image for style, composition, or character reference.</p>
+                                {inputImagePreview ? (
+                                    <div className="relative w-full h-32 mt-2">
+                                        <img src={inputImagePreview} alt="Input preview" className="w-full h-full object-cover rounded-lg" />
+                                        <button onClick={removeInputImage} disabled={isLoading} className="absolute -top-2 -right-2 bg-red-600 rounded-full text-white p-0.5 shadow-md hover:bg-red-500 transition-colors">
+                                            <XCircleIcon className="w-6 h-6"/>
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <label htmlFor="input-image-upload" className="mt-1 flex justify-center w-full h-32 px-6 pt-5 pb-6 border-2 border-gray-600 border-dashed rounded-md cursor-pointer hover:border-gray-500">
+                                        <div className="space-y-1 text-center">
+                                            <UploadIcon className="mx-auto h-10 w-10 text-gray-400" />
+                                            <p className="text-sm text-gray-400">
+                                                <span className="font-semibold text-blue-400">Upload an image</span>
+                                            </p>
+                                        </div>
+                                        <input id="input-image-upload" name="input-image-upload" type="file" className="sr-only" onChange={handleInputImageChange} accept="image/*" disabled={isLoading}/>
+                                    </label>
+                                )}
+                            </div>
                             <h3 className="text-xl font-bold text-white">2. Select an Aspect Ratio</h3>
                             <div className="grid grid-cols-5 gap-2">
                                 {aspectRatios.map(({ id, label }) => (
@@ -126,7 +175,7 @@ const ImageGeneratorFromTextPage: React.FC<ImageGeneratorFromTextPageProps> = ({
                             {isLoading ? <Spinner /> : resultUrl ? (
                                 <>
                                 <img src={resultUrl} alt="Generated" className="w-full h-full object-contain" />
-                                <a href={resultUrl} download="photofix-generated.png" className="absolute bottom-4 right-4 flex items-center justify-center gap-2 bg-green-600/80 backdrop-blur-sm text-white font-bold py-2 px-4 rounded-lg transition-all hover:bg-green-500"><DownloadIcon className="w-5 h-5"/> Download</a>
+                                <a href={resultUrl} download="photomeld-generated.png" className="absolute bottom-4 right-4 flex items-center justify-center gap-2 bg-green-600/80 backdrop-blur-sm text-white font-bold py-2 px-4 rounded-lg transition-all hover:bg-green-500"><DownloadIcon className="w-5 h-5"/> Download</a>
                                 </>
                             ) : <p className="text-gray-500">Your generated image will appear here.</p>}
                         </div>

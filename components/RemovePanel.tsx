@@ -29,6 +29,7 @@ const RemovePanel: React.FC<RemovePanelProps> = ({ onRemoveObject, isLoading, ha
                 onClick={onRemoveObject}
                 className="w-full bg-gradient-to-br from-blue-600 to-blue-500 text-white font-bold py-4 px-6 rounded-lg transition-all duration-300 ease-in-out shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-px active:scale-95 active:shadow-inner text-base disabled:from-blue-800 disabled:to-blue-700 disabled:shadow-none disabled:cursor-not-allowed disabled:transform-none"
                 disabled={isLoading || !hasHotspot}
+                title="Remove the selected object and intelligently fill the background"
             >
                 Remove Object
             </button>

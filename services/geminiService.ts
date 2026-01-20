@@ -1,3 +1,4 @@
+
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -39,7 +40,7 @@ const getImageUrlFromResponse = (response: GenerateContentResponse): string => {
 
 const generateImageWithPrompt = async (parts: Part[]): Promise<string> => {
     const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash-image-preview',
+        model: 'gemini-2.5-flash-image',
         contents: { parts },
         config: {
             responseModalities: [Modality.IMAGE, Modality.TEXT],
@@ -49,6 +50,30 @@ const generateImageWithPrompt = async (parts: Part[]): Promise<string> => {
 };
 
 // --- Core API Functions ---
+
+export const generatePromptFromImage = async (image: File): Promise<string> => {
+    const imagePart = await fileToGenerativePart(image);
+    const textPart = { text: "Analyze this image and generate a detailed, descriptive text prompt that could be used to create a similar image with an AI art generator. Describe the subject, composition, style, colors, lighting, and any other important details. The prompt should be creative and evocative." };
+
+    const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: { parts: [imagePart, textPart] },
+    });
+    
+    return response.text;
+};
+
+export const generatePromptFromVideo = async (video: File): Promise<string> => {
+    const videoPart = await fileToGenerativePart(video);
+    const textPart = { text: "Analyze this video content and generate a highly detailed, descriptive text prompt that could be used to create a similar video or animation with an AI video generator (like Sora or Kling). Describe the subjects, the environment, the camera movement (panning, zooming, etc.), the lighting, the mood, and the key actions taking place. Ensure the prompt captures the essence of the motion and cinematic quality." };
+
+    const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: { parts: [videoPart, textPart] },
+    });
+    
+    return response.text;
+};
 
 export const generateMagicEditImage = async (options: {
     baseImage: File;
@@ -126,13 +151,27 @@ export const generateFaceSwapImage = async (sourceImage: File, targetImage: File
     const textPart = { text: "Take the face from the first image (source) and realistically place it onto the person in the second image (target). Match lighting, skin tone, and perspective for a seamless blend." };
     return generateImageWithPrompt([sourcePart, targetPart, textPart]);
 };
-export const generateImageFromText = async (prompt: string, aspectRatio: string): Promise<string> => {
-    const response = await ai.models.generateImages({
-        model: 'imagen-4.0-generate-001',
-        prompt: prompt,
-        config: { numberOfImages: 1, aspectRatio: aspectRatio as any },
-    });
-    return `data:image/png;base64,${response.generatedImages[0].image.imageBytes}`;
+export const generateImageFromText = async (prompt: string, aspectRatio: string, image?: File): Promise<string> => {
+    if (image) {
+        const imagePart = await fileToGenerativePart(image);
+        const textPart = { text: `Use the provided image as a strong visual reference. Generate a new image that incorporates the style, composition, and subject of the reference image, while also following this text prompt: "${prompt}". The desired aspect ratio for the new image is ${aspectRatio}.` };
+        
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-image',
+            contents: { parts: [imagePart, textPart] },
+            config: {
+                responseModalities: [Modality.IMAGE, Modality.TEXT],
+            },
+        });
+        return getImageUrlFromResponse(response);
+    } else {
+        const response = await ai.models.generateImages({
+            model: 'imagen-4.0-generate-001',
+            prompt: prompt,
+            config: { numberOfImages: 1, aspectRatio: aspectRatio as any },
+        });
+        return `data:image/png;base64,${response.generatedImages[0].image.imageBytes}`;
+    }
 };
 export const generateLogo = async (companyName: string, slogan: string, style: string): Promise<string[]> => {
     const prompt = `A professional logo for a company named "${companyName}". Slogan: "${slogan}". Style: ${style}. The logo should be on a clean white background, vector style, suitable for branding.`;
